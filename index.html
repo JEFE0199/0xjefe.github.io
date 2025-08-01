@@ -15,7 +15,7 @@
 
     body {
       font-family: 'Share Tech Mono', monospace;
-      background-color: #000; /* fundo preto para a animação aparecer */
+      background-color: #000; /* fundo preto para animação */
       color: #00ff99;
       text-shadow: 0 0 5px #00ff99;
       display: flex;
@@ -46,7 +46,7 @@
       padding: 30px 20px;
       border-right: 1px solid #00ff99;
       position: fixed;
-      z-index: 10; /* cima da animação */
+      z-index: 10; /* acima da animação */
     }
 
     nav h1 {
@@ -75,7 +75,7 @@
       padding: 40px 30px;
       max-width: 800px;
       position: relative;
-      z-index: 10; /* cima da animação */
+      z-index: 10; /* acima da animação */
     }
 
     section {
@@ -128,14 +128,14 @@
       content: "🐦 ";
     }
 
-    /* Estilo da animação do astronauta */
+    /* Estilo do astronauta animado */
     #astronauta-bg {
       position: fixed;
       top: 50%;
       left: 50%;
       width: 300px;
       height: 300px;
-      pointer-events: none; /* permite clicar no conteúdo */
+      pointer-events: none;
       transform-style: preserve-3d;
       transform-origin: center center;
       will-change: transform;
@@ -147,7 +147,7 @@
 </head>
 <body>
 
-  <!-- Astronauta animado como fundo -->
+  <!-- SVG do astronauta animado como fundo -->
   <svg id="astronauta-bg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="cyan" aria-hidden="true" focusable="false">
     <circle cx="32" cy="32" r="30" stroke="cyan" stroke-width="2" fill="none"/>
     <circle cx="32" cy="32" r="12" fill="cyan" opacity="0.3"/>
