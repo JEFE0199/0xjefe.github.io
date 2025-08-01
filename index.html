@@ -17,8 +17,8 @@
       font-family: 'Share Tech Mono', monospace;
       color: #00ff99;
       text-shadow: 0 0 5px #00ff99;
-      display: flex;
       background: black;
+      /* display:flex removido para corrigir o ET */
     }
 
     canvas#matrix {
@@ -132,6 +132,10 @@
       user-select: none;
       cursor: pointer;
       pointer-events: auto;
+      background: transparent; /* para garantir fundo transparente */
+      top: 50%;  /* para centralizar verticalmente */
+      left: 50%; /* para centralizar horizontalmente */
+      transform: translate(-50%, -50%);
     }
   </style>
 </head>
@@ -248,13 +252,7 @@
     ];
 
     function centerET() {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const x = Math.floor((vw - et.offsetWidth) / 2);
-      const y = Math.floor((vh - et.offsetHeight) / 2);
-
-      et.style.left = x + 'px';
-      et.style.top = y + 'px';
+      // Now ET is centered by CSS transform, so no need to set left/top here
     }
 
     centerET();
@@ -265,8 +263,10 @@
       const x = Math.floor(Math.random() * vw);
       const y = Math.floor(Math.random() * vh);
 
+      et.style.transition = 'left 1s ease, top 1s ease';
       et.style.left = x + 'px';
       et.style.top = y + 'px';
+      et.style.transform = 'translate(0, 0)'; // Remove centering transform when moving
     }
 
     setInterval(moveET, 3000);
@@ -285,6 +285,7 @@
     });
 
     setInterval(() => {
+      if (!et.style.left || !et.style.top) return;
       et.style.transition = 'top 0.15s ease';
       et.style.top = (parseInt(et.style.top) - 15) + 'px';
       setTimeout(() => {
@@ -292,7 +293,12 @@
       }, 150);
     }, 1500);
 
-    window.addEventListener('resize', centerET);
+    window.addEventListener('resize', () => {
+      // Reset ET position on resize
+      et.style.left = '50%';
+      et.style.top = '50%';
+      et.style.transform = 'translate(-50%, -50%)';
+    });
   </script>
 </body>
 </html>
