@@ -124,7 +124,7 @@
       content: "🐦 ";
     }
 
-    /* ET dançando abaixo do Twitter */
+    /* ET dancing below Twitter video */
     #et-dance {
       width: 100%;
       margin-top: 20px;
@@ -209,6 +209,96 @@
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+    });
+  </script>
+
+  <!-- Desktop Goose style ET mascot script -->
+  <script>
+    // Create the ET mascot
+    const et = document.createElement('img');
+    et.src = "https://media.tenor.com/9TLv5zpV6OgAAAAi/alien-dance-transparent.gif";
+    et.style.position = 'fixed';
+    et.style.width = '120px';
+    et.style.bottom = '10px';
+    et.style.left = '10px';
+    et.style.zIndex = 9999;
+    et.style.cursor = 'pointer';
+    et.style.transition = 'transform 0.3s ease';
+    et.style.userSelect = 'none';
+    document.body.appendChild(et);
+
+    // Floating message div
+    const msg = document.createElement('div');
+    msg.style.position = 'fixed';
+    msg.style.background = 'rgba(0, 255, 153, 0.85)';
+    msg.style.color = 'black';
+    msg.style.padding = '8px 12px';
+    msg.style.borderRadius = '8px';
+    msg.style.fontFamily = "'Share Tech Mono', monospace";
+    msg.style.fontSize = '1rem';
+    msg.style.maxWidth = '200px';
+    msg.style.pointerEvents = 'none';
+    msg.style.opacity = '0';
+    msg.style.transition = 'opacity 0.5s ease';
+    msg.style.zIndex = 10000;
+    document.body.appendChild(msg);
+
+    // Fun phrases the ET says
+    const phrases = [
+      "Hey, human! 👽",
+      "Wanna play a game?",
+      "Watch out for the Sun... 🛸",
+      "Let's explore the blockchain!",
+      "You can't catch me!",
+      "Curious, aren't you?",
+      "Transcending bits and bytes!",
+      "Dripping zeros and ones...",
+      "Stealth mode activated!",
+      "Alien secret revealed!"
+    ];
+
+    // Function to move the ET randomly every 3 seconds
+    function moveET() {
+      const vw = window.innerWidth - 120;
+      const vh = window.innerHeight - 120;
+      const x = Math.floor(Math.random() * vw);
+      const y = Math.floor(Math.random() * vh);
+
+      et.style.transform = `translate(${x}px, -${y}px)`;
+    }
+
+    // Initialize position
+    et.style.transform = `translate(0px, 0px)`;
+
+    // Move ET randomly every 3 seconds
+    setInterval(moveET, 3000);
+
+    // Show random phrase near ET on click
+    et.addEventListener('click', () => {
+      const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+      const rect = et.getBoundingClientRect();
+      msg.textContent = phrase;
+      msg.style.left = rect.left + rect.width + 10 + 'px';
+      msg.style.top = rect.top + 'px';
+      msg.style.opacity = '1';
+
+      setTimeout(() => {
+        msg.style.opacity = '0';
+      }, 3000);
+    });
+
+    // Bounce animation every 1.5 seconds
+    setInterval(() => {
+      et.style.transition = 'transform 0.3s ease';
+      et.style.transform += ' translateY(-15px)';
+      setTimeout(() => {
+        et.style.transform = et.style.transform.replace(' translateY(-15px)', '');
+      }, 300);
+    }, 1500);
+
+    // Reset position on window resize
+    window.addEventListener('resize', () => {
+      et.style.transform = 'translate(0px, 0px)';
     });
   </script>
 </body>
