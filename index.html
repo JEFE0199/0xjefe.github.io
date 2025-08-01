@@ -219,8 +219,6 @@
     et.src = "https://media.tenor.com/9TLv5zpV6OgAAAAi/alien-dance-transparent.gif";
     et.style.position = 'fixed';
     et.style.width = '120px';
-    et.style.top = '10px';
-    et.style.left = '10px';
     et.style.zIndex = 9999;
     et.style.cursor = 'pointer';
     et.style.transition = 'top 0.5s ease, left 0.5s ease';
@@ -257,7 +255,20 @@
       "Alien secret revealed!"
     ];
 
-    // Function to move the ET randomly every 3 seconds
+    // Position ET in center initially
+    function centerET() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const x = Math.floor((vw - et.offsetWidth) / 2);
+      const y = Math.floor((vh - et.offsetHeight) / 2);
+
+      et.style.left = x + 'px';
+      et.style.top = y + 'px';
+    }
+
+    centerET();
+
+    // Move ET randomly every 3 seconds
     function moveET() {
       const vw = window.innerWidth - et.offsetWidth;
       const vh = window.innerHeight - et.offsetHeight;
@@ -268,7 +279,6 @@
       et.style.top = y + 'px';
     }
 
-    // Move ET every 3 seconds
     setInterval(moveET, 3000);
 
     // Show random phrase near ET on click
@@ -294,11 +304,8 @@
       }, 150);
     }, 1500);
 
-    // Reset position on window resize
-    window.addEventListener('resize', () => {
-      et.style.left = '10px';
-      et.style.top = '10px';
-    });
+    // Reset ET position to center on window resize
+    window.addEventListener('resize', centerET);
   </script>
 </body>
 </html>
