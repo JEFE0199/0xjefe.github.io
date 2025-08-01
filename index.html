@@ -7,7 +7,12 @@
   <meta name="description" content="0xjefe – Solana DAO contributor.">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Share Tech Mono', monospace;
       color: #00ff99;
@@ -15,21 +20,48 @@
       display: flex;
       background: black;
     }
+
     canvas#matrix {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
       background: black;
     }
+
     nav {
-      width: 220px; height: 100vh;
+      width: 220px;
+      height: 100vh;
       background: rgba(0, 0, 0, 0.85);
       padding: 30px 20px;
       border-right: 1px solid #00ff99;
       position: fixed;
       z-index: 2;
     }
+
+    nav h1 {
+      font-size: 1.8rem;
+      margin-bottom: 40px;
+    }
+
+    nav a {
+      display: block;
+      margin: 20px 0;
+      color: #00ff99;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    nav a::before {
+      content: "> ";
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
     main {
       margin-left: 220px;
       padding: 40px 30px;
@@ -37,6 +69,7 @@
       position: relative;
       z-index: 1;
     }
+
     section {
       margin-bottom: 80px;
       background-color: rgba(0, 0, 0, 0.6);
@@ -45,25 +78,49 @@
       border-radius: 8px;
       box-shadow: 0 0 10px #00ff99;
     }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
     .typing {
       overflow: hidden;
       white-space: nowrap;
       border-right: 2px solid #00ff99;
       width: 0;
-      animation: typing 3s steps(40,end) forwards, blink 0.8s step-end infinite;
+      animation: typing 3s steps(40, end) forwards, blink 0.8s step-end infinite;
     }
+
     @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
+      from { width: 0 }
+      to { width: 100% }
     }
+
     @keyframes blink {
-      from, to { border-color: transparent; }
-      50% { border-color: #00ff99; }
+      from, to { border-color: transparent }
+      50% { border-color: #00ff99 }
     }
-    a { color: #00ff99; }
-    .social { margin-top: 40px; font-size: 1rem; }
-    .social a::before { content: "🐦 "; }
-    /* ET transparente */
+
+    a {
+      color: #00ff99;
+    }
+
+    .social {
+      margin-top: 40px;
+      font-size: 1rem;
+    }
+
+    .social a::before {
+      content: "🐦 ";
+    }
+
+    /* 👽 ET Dançando */
     #et-dance {
       position: fixed;
       bottom: 20px;
@@ -75,6 +132,7 @@
   </style>
 </head>
 <body>
+  <!-- 🎥 Canvas Matrix Background -->
   <canvas id="matrix"></canvas>
 
   <nav>
@@ -90,7 +148,7 @@
   <main>
     <section id="about">
       <h2 class="typing">About Me</h2>
-      <p>Crypto explorer. Solana builder. Jito Cabal contributor. On‑chain freedom maximalist.</p>
+      <p>Crypto explorer. Solana builder. Jito Cabal contributor. On-chain freedom maximalist.</p>
     </section>
 
     <section id="projects">
@@ -104,38 +162,45 @@
     </section>
   </main>
 
-  <!-- ET dançando com fundo transparente -->
-  <img id="et-dance" src="https://media.tenor.com/9TLv5zpV6OgAAAAi/alien-dance-transparent.gif" alt="ET dançando">
+  <!-- 👽 ET dançando -->
+  <video autoplay muted loop id="et-dance">
+    <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
+  </video>
 
-  <!-- Script Matrix -->
+  <!-- 🧠 Script Matrix -->
   <script>
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
+
     canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
 
     const letters = "アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const fontSize = 14;
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops = Array(columns).fill(1);
+    const columns = canvas.width / fontSize;
+
+    const drops = Array(Math.floor(columns)).fill(1);
 
     function draw() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       ctx.fillStyle = "#00ff99";
       ctx.font = fontSize + "px monospace";
+
       for (let i = 0; i < drops.length; i++) {
         const text = letters.charAt(Math.floor(Math.random() * letters.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
         drops[i]++;
       }
     }
+
     setInterval(draw, 35);
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
   </script>
 </body>
 </html>
