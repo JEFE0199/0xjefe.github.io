@@ -15,7 +15,10 @@
 
     body {
       font-family: 'Share Tech Mono', monospace;
-      background-color: #000; /* fundo preto para animação */
+      /* background antigo comentado para aparecer astronauta */
+      /* background: url('66e80294-5998-45cd-9698-8355ef3ed99d.png') no-repeat center center fixed; */
+      /* background-size: cover; */
+      background-color: #000;
       color: #00ff99;
       text-shadow: 0 0 5px #00ff99;
       display: flex;
@@ -46,7 +49,7 @@
       padding: 30px 20px;
       border-right: 1px solid #00ff99;
       position: fixed;
-      z-index: 10; /* acima da animação */
+      z-index: 10;
     }
 
     nav h1 {
@@ -75,7 +78,7 @@
       padding: 40px 30px;
       max-width: 800px;
       position: relative;
-      z-index: 10; /* acima da animação */
+      z-index: 10;
     }
 
     section {
@@ -139,15 +142,16 @@
       transform-style: preserve-3d;
       transform-origin: center center;
       will-change: transform;
-      z-index: 1; /* atrás do conteúdo */
+      z-index: 1;
       filter: drop-shadow(0 0 10px cyan);
       mix-blend-mode: screen;
+      transform: translate(-50%, -50%);
     }
   </style>
 </head>
 <body>
 
-  <!-- SVG do astronauta animado como fundo -->
+  <!-- SVG do astronauta animado no fundo -->
   <svg id="astronauta-bg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="cyan" aria-hidden="true" focusable="false">
     <circle cx="32" cy="32" r="30" stroke="cyan" stroke-width="2" fill="none"/>
     <circle cx="32" cy="32" r="12" fill="cyan" opacity="0.3"/>
@@ -185,7 +189,6 @@
 
   <script>
     const astronauta = document.getElementById('astronauta-bg');
-
     window.addEventListener('mousemove', (e) => {
       const x = (e.clientX / window.innerWidth) - 0.5;
       const y = (e.clientY / window.innerHeight) - 0.5;
@@ -193,7 +196,6 @@
         translate(-50%, -50%)
         rotateX(${y * 15}deg)
         rotateY(${x * 15}deg)
-        translateZ(0)
       `;
     });
   </script>
