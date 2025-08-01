@@ -17,6 +17,7 @@
       font-family: 'Share Tech Mono', monospace;
       color: #00ff99;
       text-shadow: 0 0 5px #00ff99;
+      display: flex;
       background: black;
     }
 
@@ -41,7 +42,6 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      justify-content: space-between; /* Espaço para o contador no rodapé */
     }
 
     nav h1 {
@@ -71,10 +71,6 @@
       max-width: 800px;
       position: relative;
       z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
     }
 
     section {
@@ -128,49 +124,22 @@
       content: "🐦 ";
     }
 
-    /* Mascote robô */
-    .robot-mascot {
-      position: fixed !important;
-      z-index: 9999 !important;
-      width: 120px;
-      user-select: none;
-      cursor: pointer;
-      pointer-events: auto;
-      background: transparent;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 8px;
-      box-shadow: 0 0 15px #00ff99;
-      transition: left 1s ease, top 1s ease;
-    }
-
-    /* Mensagem do mascote */
-    .robot-msg {
-      position: fixed;
-      background: rgba(0, 255, 153, 0.85);
-      color: black;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1rem;
-      max-width: 220px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      z-index: 10000;
-    }
-
-    /* Contador de visitas na barra lateral, rodapé */
-    #visit-counter {
-      font-size: 1rem;
-      color: #00ff99;
-      font-family: 'Share Tech Mono', monospace;
-      user-select: none;
-      padding-top: 20px;
-      border-top: 1px solid #00ff99;
+    #et-dance {
       width: 100%;
-      text-align: center;
+      margin-top: 20px;
+      pointer-events: none;
+      z-index: 3;
+      position: static;
+      border-radius: 8px;
+      background: transparent;
+      display: block;
+    }
+
+    /* BTC e contador */
+    #btc-price, #user-counter {
+      margin-top: 20px;
+      color: #00ff99;
+      font-size: 1rem;
     }
   </style>
 </head>
@@ -179,17 +148,24 @@
   <canvas id="matrix"></canvas>
 
   <nav>
-    <div>
-      <h1>0xjefe</h1>
-      <a href="#about">_about</a>
-      <a href="#projects">_projects</a>
-      <a href="#connect">_connect</a>
-      <div class="social">
-        <a href="https://x.com/JEFE019" target="_blank">Twitter</a>
-      </div>
+    <h1>0xjefe</h1>
+    <a href="#about">_about</a>
+    <a href="#projects">_projects</a>
+    <a href="#connect">_connect</a>
+
+    <!-- Preço BTC -->
+    <div id="btc-price">BTC: Loading...</div>
+
+    <!-- Contador de usuários -->
+    <div id="user-counter">👤 0 real users online</div>
+
+    <!-- Twitter + ET -->
+    <div class="social">
+      <a href="https://x.com/JEFE019" target="_blank">Twitter</a>
+      <video autoplay muted loop id="et-dance" playsinline>
+        <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
+      </video>
     </div>
-    <!-- Contador de visitas -->
-    <div id="visit-counter">Loading visits...</div>
   </nav>
 
   <main>
@@ -208,68 +184,6 @@
       <p>Follow me on Twitter: <a href="https://x.com/JEFE019" target="_blank">@JEFE019</a></p>
     </section>
   </main>
-
-  <!-- Mascote Robô Script -->
-  <script>
-    const robot = document.createElement('img');
-    robot.src = "https://media.tenor.com/Od0wXWy8j3EAAAAC/robot-dance.gif";
-    robot.alt = "Dancing Robot Mascot";
-    robot.classList.add('robot-mascot');
-    document.body.appendChild(robot);
-
-    const robotMsg = document.createElement('div');
-    robotMsg.classList.add('robot-msg');
-    document.body.appendChild(robotMsg);
-
-    const robotPhrases = [
-      "Beep bop! Ready to help.",
-      "Calculating the future...",
-      "Let's build something cool!",
-      "Robots love crypto too!",
-      "Dance mode activated!",
-      "010101 greetings!",
-      "I'm watching your code!",
-      "Debugging in progress...",
-      "System online and ready.",
-      "Error 404: Boredom not found."
-    ];
-
-    robot.style.top = '50%';
-    robot.style.left = '50%';
-    robot.style.transform = 'translate(-50%, -50%)';
-
-    function moveRobot() {
-      const vw = window.innerWidth - robot.offsetWidth;
-      const vh = window.innerHeight - robot.offsetHeight;
-      const x = Math.floor(Math.random() * vw);
-      const y = Math.floor(Math.random() * vh);
-
-      robot.style.left = x + 'px';
-      robot.style.top = y + 'px';
-      robot.style.transform = 'translate(0, 0)';
-    }
-
-    setInterval(moveRobot, 3000);
-
-    robot.addEventListener('click', () => {
-      const phrase = robotPhrases[Math.floor(Math.random() * robotPhrases.length)];
-      const rect = robot.getBoundingClientRect();
-      robotMsg.textContent = phrase;
-      robotMsg.style.left = (rect.right + 10) + 'px';
-      robotMsg.style.top = rect.top + 'px';
-      robotMsg.style.opacity = '1';
-
-      setTimeout(() => {
-        robotMsg.style.opacity = '0';
-      }, 3000);
-    });
-
-    window.addEventListener('resize', () => {
-      robot.style.left = '50%';
-      robot.style.top = '50%';
-      robot.style.transform = 'translate(-50%, -50%)';
-    });
-  </script>
 
   <!-- Script Matrix -->
   <script>
@@ -312,18 +226,35 @@
     });
   </script>
 
-  <!-- Contador de visitas script -->
+  <!-- Script BTC Price + Contador -->
   <script>
-    const counterDisplay = document.getElementById('visit-counter');
+    // Atualiza preço BTC
+    async function fetchBTC() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+        const data = await res.json();
+        const price = data.bitcoin.usd.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2
+        });
+        document.getElementById("btc-price").textContent = `BTC: ${price}`;
+      } catch (e) {
+        document.getElementById("btc-price").textContent = "BTC: Error";
+      }
+    }
 
-    // Pega o contador atual da sessão ou inicializa com 0
-    let visitCount = sessionStorage.getItem('page_views') || 0;
-    visitCount = Number(visitCount) + 1;
-    sessionStorage.setItem('page_views', visitCount);
+    fetchBTC();
+    setInterval(fetchBTC, 30000); // Atualiza a cada 30s
 
-    // Exibe a contagem na tela
-    counterDisplay.textContent = `Page views this session: ${visitCount}`;
+    // Simulador de usuários reais (exemplo com número que muda aleatoriamente)
+    function updateUserCounter() {
+      const users = Math.floor(Math.random() * 15) + 5; // entre 5 e 20
+      document.getElementById("user-counter").textContent = `👤 ${users} real users online`;
+    }
+
+    updateUserCounter();
+    setInterval(updateUserCounter, 20000); // Atualiza a cada 20s
   </script>
-
 </body>
 </html>
