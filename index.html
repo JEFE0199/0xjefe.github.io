@@ -39,6 +39,9 @@
       border-right: 1px solid #00ff99;
       position: fixed;
       z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     nav h1 {
@@ -114,25 +117,28 @@
     .social {
       margin-top: 40px;
       font-size: 1rem;
+      width: 100%;
     }
 
     .social a::before {
       content: "🐦 ";
     }
 
-    /* 👽 ET Dançando */
+    /* ET dançando abaixo do Twitter */
     #et-dance {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 150px;
-      z-index: 3;
+      width: 100%;
+      margin-top: 20px;
       pointer-events: none;
+      z-index: 3;
+      position: static;
+      border-radius: 8px;
+      background: transparent;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <!-- 🎥 Canvas Matrix Background -->
+  <!-- Canvas Matrix Background -->
   <canvas id="matrix"></canvas>
 
   <nav>
@@ -142,6 +148,9 @@
     <a href="#connect">_connect</a>
     <div class="social">
       <a href="https://x.com/JEFE019" target="_blank">Twitter</a>
+      <video autoplay muted loop id="et-dance" playsinline>
+        <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
+      </video>
     </div>
   </nav>
 
@@ -162,12 +171,7 @@
     </section>
   </main>
 
-  <!-- 👽 ET dançando -->
-  <video autoplay muted loop id="et-dance">
-    <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
-  </video>
-
-  <!-- 🧠 Script Matrix -->
+  <!-- Script Matrix -->
   <script>
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
@@ -177,9 +181,9 @@
 
     const letters = "アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const fontSize = 14;
-    const columns = canvas.width / fontSize;
+    const columns = Math.floor(canvas.width / fontSize);
 
-    const drops = Array(Math.floor(columns)).fill(1);
+    const drops = Array(columns).fill(1);
 
     function draw() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
@@ -201,6 +205,11 @@
     }
 
     setInterval(draw, 35);
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
 </body>
 </html>
