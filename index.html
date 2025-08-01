@@ -124,16 +124,14 @@
       content: "🐦 ";
     }
 
-    /* ET dancing below Twitter video */
-    #et-dance {
-      width: 100%;
-      margin-top: 20px;
-      pointer-events: none;
-      z-index: 3;
-      position: static;
-      border-radius: 8px;
-      background: transparent;
-      display: block;
+    /* ET mascot styling */
+    .et-mascot {
+      position: fixed !important;
+      z-index: 9999 !important;
+      width: 120px;
+      user-select: none;
+      cursor: pointer;
+      pointer-events: auto;
     }
   </style>
 </head>
@@ -148,7 +146,7 @@
     <a href="#connect">_connect</a>
     <div class="social">
       <a href="https://x.com/JEFE019" target="_blank">Twitter</a>
-      <video autoplay muted loop id="et-dance" playsinline>
+      <video autoplay muted loop id="et-dance" playsinline style="width: 100%; margin-top: 20px; pointer-events:none; border-radius:8px; background:transparent; display:block;">
         <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
       </video>
     </div>
@@ -214,18 +212,13 @@
 
   <!-- Desktop Goose style ET mascot script -->
   <script>
-    // Create the ET mascot
+    // Create ET mascot
     const et = document.createElement('img');
     et.src = "https://media.tenor.com/9TLv5zpV6OgAAAAi/alien-dance-transparent.gif";
-    et.style.position = 'fixed';
-    et.style.width = '120px';
-    et.style.zIndex = 9999;
-    et.style.cursor = 'pointer';
-    et.style.transition = 'top 0.5s ease, left 0.5s ease';
-    et.style.userSelect = 'none';
+    et.classList.add('et-mascot');
     document.body.appendChild(et);
 
-    // Floating message div
+    // Message div
     const msg = document.createElement('div');
     msg.style.position = 'fixed';
     msg.style.background = 'rgba(0, 255, 153, 0.85)';
@@ -241,7 +234,6 @@
     msg.style.zIndex = 10000;
     document.body.appendChild(msg);
 
-    // Fun phrases the ET says
     const phrases = [
       "Hey, human! 👽",
       "Wanna play a game?",
@@ -255,7 +247,6 @@
       "Alien secret revealed!"
     ];
 
-    // Position ET in center initially
     function centerET() {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
@@ -268,7 +259,6 @@
 
     centerET();
 
-    // Move ET randomly every 3 seconds
     function moveET() {
       const vw = window.innerWidth - et.offsetWidth;
       const vh = window.innerHeight - et.offsetHeight;
@@ -281,7 +271,6 @@
 
     setInterval(moveET, 3000);
 
-    // Show random phrase near ET on click
     et.addEventListener('click', () => {
       const phrase = phrases[Math.floor(Math.random() * phrases.length)];
       const rect = et.getBoundingClientRect();
@@ -295,7 +284,6 @@
       }, 3000);
     });
 
-    // Small bounce animation every 1.5 seconds
     setInterval(() => {
       et.style.transition = 'top 0.15s ease';
       et.style.top = (parseInt(et.style.top) - 15) + 'px';
@@ -304,7 +292,6 @@
       }, 150);
     }, 1500);
 
-    // Reset ET position to center on window resize
     window.addEventListener('resize', centerET);
   </script>
 </body>
