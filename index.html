@@ -144,7 +144,6 @@
   </style>
 </head>
 <body>
-  <!-- Canvas Matrix Background -->
   <canvas id="matrix"></canvas>
 
   <nav>
@@ -183,7 +182,6 @@
     </section>
   </main>
 
-  <!-- Script Matrix -->
   <script>
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
@@ -224,7 +222,6 @@
     });
   </script>
 
-  <!-- Script BTC, SOL (com animação) e Contador -->
   <script>
     let btcValue = 0;
     let solValue = 0;
@@ -254,7 +251,7 @@
 
     async function fetchPrices() {
       try {
-        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,solana&vs_currencies=usd");
+        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,solana&vs_currencies=usd"));
         const data = await res.json();
 
         const newBTC = data.bitcoin.usd;
