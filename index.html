@@ -18,7 +18,7 @@
       color: #00ff99;
       text-shadow: 0 0 5px #00ff99;
       background: black;
-      /* display:flex removido para corrigir o ET */
+      /* display:flex removido para corrigir o mascote */
     }
 
     canvas#matrix {
@@ -124,18 +124,37 @@
       content: "🐦 ";
     }
 
-    /* ET mascot styling */
-    .et-mascot {
+    /* Mascote robô */
+    .robot-mascot {
       position: fixed !important;
       z-index: 9999 !important;
       width: 120px;
       user-select: none;
       cursor: pointer;
       pointer-events: auto;
-      background: transparent; /* para garantir fundo transparente */
-      top: 50%;  /* para centralizar verticalmente */
-      left: 50%; /* para centralizar horizontalmente */
+      background: transparent;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
+      border-radius: 8px;
+      box-shadow: 0 0 15px #00ff99;
+      transition: left 1s ease, top 1s ease;
+    }
+
+    /* Mensagem do mascote */
+    .robot-msg {
+      position: fixed;
+      background: rgba(0, 255, 153, 0.85);
+      color: black;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      max-width: 220px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 10000;
     }
   </style>
 </head>
@@ -150,9 +169,6 @@
     <a href="#connect">_connect</a>
     <div class="social">
       <a href="https://x.com/JEFE019" target="_blank">Twitter</a>
-      <video autoplay muted loop id="et-dance" playsinline style="width: 100%; margin-top: 20px; pointer-events:none; border-radius:8px; background:transparent; display:block;">
-        <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
-      </video>
     </div>
   </nav>
 
@@ -214,90 +230,72 @@
     });
   </script>
 
-  <!-- Desktop Goose style ET mascot script -->
+  <!-- Mascote Robô Script -->
   <script>
-    // Create ET mascot
-    const et = document.createElement('img');
-    et.src = "https://media.tenor.com/9TLv5zpV6OgAAAAi/alien-dance-transparent.gif";
-    et.classList.add('et-mascot');
-    document.body.appendChild(et);
+    // Cria o elemento img para o mascote
+    const robot = document.createElement('img');
+    robot.src = "https://media.tenor.com/Od0wXWy8j3EAAAAC/robot-dance.gif"; // Robô dançando
+    robot.alt = "Dancing Robot Mascot";
+    robot.classList.add('robot-mascot');
+    document.body.appendChild(robot);
 
-    // Message div
-    const msg = document.createElement('div');
-    msg.style.position = 'fixed';
-    msg.style.background = 'rgba(0, 255, 153, 0.85)';
-    msg.style.color = 'black';
-    msg.style.padding = '8px 12px';
-    msg.style.borderRadius = '8px';
-    msg.style.fontFamily = "'Share Tech Mono', monospace";
-    msg.style.fontSize = '1rem';
-    msg.style.maxWidth = '200px';
-    msg.style.pointerEvents = 'none';
-    msg.style.opacity = '0';
-    msg.style.transition = 'opacity 0.5s ease';
-    msg.style.zIndex = 10000;
-    document.body.appendChild(msg);
+    // Mensagem do mascote
+    const robotMsg = document.createElement('div');
+    robotMsg.classList.add('robot-msg');
+    document.body.appendChild(robotMsg);
 
-    const phrases = [
-      "Hey, human! 👽",
-      "Wanna play a game?",
-      "Watch out for the Sun... 🛸",
-      "Let's explore the blockchain!",
-      "You can't catch me!",
-      "Curious, aren't you?",
-      "Transcending bits and bytes!",
-      "Dripping zeros and ones...",
-      "Stealth mode activated!",
-      "Alien secret revealed!"
+    const robotPhrases = [
+      "Beep bop! Ready to help.",
+      "Calculating the future...",
+      "Let's build something cool!",
+      "Robots love crypto too!",
+      "Dance mode activated!",
+      "010101 greetings!",
+      "I'm watching your code!",
+      "Debugging in progress...",
+      "System online and ready.",
+      "Error 404: Boredom not found."
     ];
 
-    function centerET() {
-      // Now ET is centered by CSS transform, so no need to set left/top here
-    }
+    // Posiciona o robô no centro na inicialização
+    robot.style.top = '50%';
+    robot.style.left = '50%';
+    robot.style.transform = 'translate(-50%, -50%)';
 
-    centerET();
-
-    function moveET() {
-      const vw = window.innerWidth - et.offsetWidth;
-      const vh = window.innerHeight - et.offsetHeight;
+    // Função para mover o robô para posição aleatória na tela
+    function moveRobot() {
+      const vw = window.innerWidth - robot.offsetWidth;
+      const vh = window.innerHeight - robot.offsetHeight;
       const x = Math.floor(Math.random() * vw);
       const y = Math.floor(Math.random() * vh);
 
-      et.style.transition = 'left 1s ease, top 1s ease';
-      et.style.left = x + 'px';
-      et.style.top = y + 'px';
-      et.style.transform = 'translate(0, 0)'; // Remove centering transform when moving
+      robot.style.left = x + 'px';
+      robot.style.top = y + 'px';
+      robot.style.transform = 'translate(0, 0)';
     }
 
-    setInterval(moveET, 3000);
+    // Mova o robô a cada 3 segundos
+    setInterval(moveRobot, 3000);
 
-    et.addEventListener('click', () => {
-      const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-      const rect = et.getBoundingClientRect();
-      msg.textContent = phrase;
-      msg.style.left = (rect.right + 10) + 'px';
-      msg.style.top = rect.top + 'px';
-      msg.style.opacity = '1';
+    // Exibir mensagem quando o robô for clicado
+    robot.addEventListener('click', () => {
+      const phrase = robotPhrases[Math.floor(Math.random() * robotPhrases.length)];
+      const rect = robot.getBoundingClientRect();
+      robotMsg.textContent = phrase;
+      robotMsg.style.left = (rect.right + 10) + 'px';
+      robotMsg.style.top = rect.top + 'px';
+      robotMsg.style.opacity = '1';
 
       setTimeout(() => {
-        msg.style.opacity = '0';
+        robotMsg.style.opacity = '0';
       }, 3000);
     });
 
-    setInterval(() => {
-      if (!et.style.left || !et.style.top) return;
-      et.style.transition = 'top 0.15s ease';
-      et.style.top = (parseInt(et.style.top) - 15) + 'px';
-      setTimeout(() => {
-        et.style.top = (parseInt(et.style.top) + 15) + 'px';
-      }, 150);
-    }, 1500);
-
+    // Reposiciona robô no centro ao redimensionar janela
     window.addEventListener('resize', () => {
-      // Reset ET position on resize
-      et.style.left = '50%';
-      et.style.top = '50%';
-      et.style.transform = 'translate(-50%, -50%)';
+      robot.style.left = '50%';
+      robot.style.top = '50%';
+      robot.style.transform = 'translate(-50%, -50%)';
     });
   </script>
 </body>
