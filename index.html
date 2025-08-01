@@ -224,34 +224,48 @@
     });
   </script>
 
-  <!-- Script BTC, SOL e Contador -->
+  <!-- Script BTC, SOL (com animação) e Contador -->
   <script>
-    async function fetchBTC() {
-      try {
-        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
-        const data = await res.json();
-        const price = data.bitcoin.usd.toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 2
-        });
-        document.getElementById("btc-price").textContent = `BTC: ${price}`;
-      } catch (e) {
-        document.getElementById("btc-price").textContent = "BTC: Error";
-      }
+    let btcValue = 0;
+    let solValue = 0;
+
+    function animateCounter(elementId, start, end) {
+      const duration = 800;
+      const frameRate = 30;
+      const steps = duration / frameRate;
+      let currentStep = 0;
+
+      const increment = (end - start) / steps;
+
+      const interval = setInterval(() => {
+        currentStep++;
+        const value = start + increment * currentStep;
+        document.getElementById(elementId).textContent =
+          `${elementId === 'btc-price' ? 'BTC' : 'SOL'}: ` +
+          value.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+          });
+
+        if (currentStep >= steps) clearInterval(interval);
+      }, frameRate);
     }
 
-    async function fetchSOL() {
+    async function fetchPrices() {
       try {
-        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,solana&vs_currencies=usd");
         const data = await res.json();
-        const price = data.solana.usd.toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 2
-        });
-        document.getElementById("sol-price").textContent = `SOL: ${price}`;
+
+        const newBTC = data.bitcoin.usd;
+        animateCounter("btc-price", btcValue, newBTC);
+        btcValue = newBTC;
+
+        const newSOL = data.solana.usd;
+        animateCounter("sol-price", solValue, newSOL);
+        solValue = newSOL;
       } catch (e) {
+        document.getElementById("btc-price").textContent = "BTC: Error";
         document.getElementById("sol-price").textContent = "SOL: Error";
       }
     }
@@ -261,12 +275,9 @@
       document.getElementById("user-counter").textContent = `👤 ${users} real users online`;
     }
 
-    fetchBTC();
-    fetchSOL();
+    fetchPrices();
     updateUserCounter();
-
-    setInterval(fetchBTC, 30000);
-    setInterval(fetchSOL, 30000);
+    setInterval(fetchPrices, 30000);
     setInterval(updateUserCounter, 20000);
   </script>
 </body>
