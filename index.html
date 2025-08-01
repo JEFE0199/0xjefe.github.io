@@ -42,6 +42,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      overflow-y: auto;
     }
 
     nav h1 {
@@ -124,6 +125,12 @@
       content: "🐦 ";
     }
 
+    #btc-price, #sol-price, #user-counter {
+      margin-top: 20px;
+      color: #00ff99;
+      font-size: 1rem;
+    }
+
     #et-dance {
       width: 100%;
       margin-top: 20px;
@@ -133,13 +140,6 @@
       border-radius: 8px;
       background: transparent;
       display: block;
-    }
-
-    /* BTC e contador */
-    #btc-price, #user-counter {
-      margin-top: 20px;
-      color: #00ff99;
-      font-size: 1rem;
     }
   </style>
 </head>
@@ -153,19 +153,17 @@
     <a href="#projects">_projects</a>
     <a href="#connect">_connect</a>
 
-    <!-- Preço BTC -->
-    <div id="btc-price">BTC: Loading...</div>
-
-    <!-- Contador de usuários -->
-    <div id="user-counter">👤 0 real users online</div>
-
-    <!-- Twitter + ET -->
     <div class="social">
       <a href="https://x.com/JEFE019" target="_blank">Twitter</a>
-      <video autoplay muted loop id="et-dance" playsinline>
-        <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
-      </video>
     </div>
+
+    <div id="btc-price">BTC: Loading...</div>
+    <div id="sol-price">SOL: Loading...</div>
+    <div id="user-counter">👤 0 real users online</div>
+
+    <video autoplay muted loop id="et-dance" playsinline>
+      <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
+    </video>
   </nav>
 
   <main>
@@ -226,9 +224,8 @@
     });
   </script>
 
-  <!-- Script BTC Price + Contador -->
+  <!-- Script BTC, SOL e Contador -->
   <script>
-    // Atualiza preço BTC
     async function fetchBTC() {
       try {
         const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
@@ -244,17 +241,33 @@
       }
     }
 
-    fetchBTC();
-    setInterval(fetchBTC, 30000); // Atualiza a cada 30s
+    async function fetchSOL() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
+        const data = await res.json();
+        const price = data.solana.usd.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2
+        });
+        document.getElementById("sol-price").textContent = `SOL: ${price}`;
+      } catch (e) {
+        document.getElementById("sol-price").textContent = "SOL: Error";
+      }
+    }
 
-    // Simulador de usuários reais (exemplo com número que muda aleatoriamente)
     function updateUserCounter() {
-      const users = Math.floor(Math.random() * 15) + 5; // entre 5 e 20
+      const users = Math.floor(Math.random() * 15) + 5;
       document.getElementById("user-counter").textContent = `👤 ${users} real users online`;
     }
 
+    fetchBTC();
+    fetchSOL();
     updateUserCounter();
-    setInterval(updateUserCounter, 20000); // Atualiza a cada 20s
+
+    setInterval(fetchBTC, 30000);
+    setInterval(fetchSOL, 30000);
+    setInterval(updateUserCounter, 20000);
   </script>
 </body>
 </html>
