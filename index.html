@@ -7,44 +7,28 @@
   <meta name="description" content="0xjefe – Solana DAO contributor.">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      background: black;
+    body {
       font-family: 'Share Tech Mono', monospace;
       color: #00ff99;
       text-shadow: 0 0 5px #00ff99;
       display: flex;
+      background: black;
     }
 
-    /* Canvas da chuva de caracteres */
-    #matrix {
+    canvas#matrix {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
       z-index: 0;
-      pointer-events: none;
-      mix-blend-mode: normal;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        transparent,
-        transparent 2px,
-        rgba(0, 255, 153, 0.05) 3px
-      );
-      z-index: 1;
-      pointer-events: none;
+      background: black;
     }
 
     nav {
@@ -54,7 +38,7 @@
       padding: 30px 20px;
       border-right: 1px solid #00ff99;
       position: fixed;
-      z-index: 10;
+      z-index: 2;
     }
 
     nav h1 {
@@ -83,7 +67,7 @@
       padding: 40px 30px;
       max-width: 800px;
       position: relative;
-      z-index: 10;
+      z-index: 1;
     }
 
     section {
@@ -123,7 +107,9 @@
       50% { border-color: #00ff99 }
     }
 
-    a { color: #00ff99; }
+    a {
+      color: #00ff99;
+    }
 
     .social {
       margin-top: 40px;
@@ -133,11 +119,20 @@
     .social a::before {
       content: "🐦 ";
     }
+
+    /* 👽 ET Dançando */
+    #et-dance {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 150px;
+      z-index: 3;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
-
-  <!-- Canvas da chuva de letras -->
+  <!-- 🎥 Canvas Matrix Background -->
   <canvas id="matrix"></canvas>
 
   <nav>
@@ -167,55 +162,45 @@
     </section>
   </main>
 
-  <!-- Script da chuva de letras estilo Matrix -->
+  <!-- 👽 ET dançando -->
+  <video autoplay muted loop id="et-dance">
+    <source src="https://media.tenor.com/66Ktu1R72yMAAAPo/alienpls3alienpls-alienpls-faster.mp4" type="video/mp4">
+  </video>
+
+  <!-- 🧠 Script Matrix -->
   <script>
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
 
-    // caracteres estilo "Matrix" (letras, números e alguns katakana)
-    const letters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const fontSize = 16;
-    const columns = Math.floor(width / fontSize);
-    const drops = Array(columns).fill(0); // y position for each column
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+
+    const drops = Array(Math.floor(columns)).fill(1);
 
     function draw() {
-      // semitransparente para dar rastro
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.font = fontSize + 'px "Share Tech Mono", monospace';
+      ctx.fillStyle = "#00ff99";
+      ctx.font = fontSize + "px monospace";
 
       for (let i = 0; i < drops.length; i++) {
         const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        // letra brilhante no topo e verde mais fraca abaixo
-        ctx.fillStyle = '#00ff99';
-        ctx.fillText(text, x, y);
-
-        if (y > height && Math.random() > 0.975) {
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
+
         drops[i]++;
       }
     }
 
-    let interval = setInterval(draw, 50);
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      // recalcula colunas
-      const newCols = Math.floor(width / fontSize);
-      drops.length = newCols;
-      for (let i = 0; i < newCols; i++) {
-        if (drops[i] === undefined) drops[i] = Math.random() * 10;
-      }
-    });
+    setInterval(draw, 35);
   </script>
-
 </body>
 </html>
