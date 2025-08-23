@@ -29,20 +29,18 @@
     a { color: #00ffe0; }
     @media (max-width: 768px) { header { flex-direction: column; align-items: flex-start; gap: 10px; } .nav-links { flex-wrap: wrap; } }
 
-    /* ===== estilo pagamento ===== */
-    #qrcode { margin-top: 20px; display: flex; justify-content: center; }
-    .wallet-address { margin-top: 15px; font-size: 1rem; text-align: center; word-break: break-all; color: #00ffe0; }
-    .copy-btn { display: block; margin: 15px auto 0; padding: 10px 20px; font-size: 1rem; background: #0a0a0a; border: 1px solid #00ffe0; color: #00ffe0; cursor: pointer; border-radius: 6px; transition: all 0.2s ease; }
-    .copy-btn:hover { background: #00ffe0; color: #0a0a0a; box-shadow: 0 0 10px #00ffe0; }
-    .copy-btn.copied { background: #00ffe0; color: #0a0a0a; box-shadow: 0 0 15px #00ffe0; }
+    /* --- extra styles only for wallet section --- */
+    .wallet-container { margin-top: 20px; text-align: center; }
+    .wallet-container img { margin-top: 10px; width: 160px; height: 160px; }
+    .wallet-container button { margin-top: 10px; padding: 8px 14px; background: #0a0a0a; color: #00ffe0; border: 1px solid #00ffe0; border-radius: 6px; cursor: pointer; font-family: 'Share Tech Mono', monospace; }
+    .wallet-container button:hover { background: #00ffe0; color: #0a0a0a; text-shadow: none; }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
   <header>
     <div class="logo">
-      <img src="https://media.tenor.com/66e80294-5998-45cd-9698-8355ef3ed99d.png" alt="et dançando">
-      0xjefe
+      <img src="https://media.tenor.com/66e80294-5998-45cd-9698-8355ef3ed99d.png" alt="et dançando"> 0xjefe
     </div>
     <div class="nav-links">
       <a href="#about">_about</a>
@@ -56,32 +54,33 @@
       <div id="user-counter">👤 0 real users online</div>
     </div>
   </header>
+
   <main>
     <section id="about">
       <h2 class="typing">About Me</h2>
       <p>Crypto explorer. Solana builder. Jito Cabal contributor. On-chain freedom maximalist.</p>
     </section>
+
     <section id="projects">
       <h2 class="typing">Projects</h2>
       <p>Building for DAOs, DeFi, and governance on Solana. Focused on speed, freedom and decentralization.</p>
     </section>
+
     <section id="connect">
       <h2 class="typing">Connect</h2>
       <p>Follow me on Twitter: <a href="https://x.com/JEFE019" target="_blank">@JEFE019</a></p>
-    </section>
 
-    <!-- NOVA SEÇÃO DE PAGAMENTOS -->
-    <section id="payments">
-      <h2 class="typing">Payments</h2>
-      <p>Support my work with Solana (SOL). Scan the QR code or copy the address:</p>
-      <div id="qrcode"></div>
-      <div class="wallet-address">
-        <code id="wallet-address">FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP</code>
+      <div class="wallet-container">
+        <p><strong>Solana Address:</strong></p>
+        <p id="wallet">FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP</p>
+        <button onclick="copyWallet()">Copy Address</button>
+        <br>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP" alt="Wallet QR Code">
       </div>
-      <button class="copy-btn" id="copyBtn">📋 Copiar Endereço</button>
     </section>
   </main>
 
+  <!-- seu script original continua intacto -->
   <script>
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
@@ -109,6 +108,7 @@
       canvas.height = window.innerHeight;
     });
   </script>
+
   <script>
     let btcValue = 0;
     let solValue = 0;
@@ -121,9 +121,7 @@
       const interval = setInterval(() => {
         currentStep++;
         const value = start + increment * currentStep;
-        document.getElementById(elementId).textContent = 
-          `${elementId === 'btc-price' ? 'BTC' : 'SOL'}: ` +
-          value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+        document.getElementById(elementId).textContent = `${elementId === 'btc-price' ? 'BTC' : 'SOL'}: ` + value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
         if (currentStep >= steps) clearInterval(interval);
       }, frameRate);
     }
@@ -150,32 +148,13 @@
     updateUserCounter();
     setInterval(fetchPrices, 30000);
     setInterval(updateUserCounter, 20000);
-  </script>
 
-  <!-- QR Code + Copiar -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script>
-    const walletAddress = document.getElementById("wallet-address").textContent;
-    new QRCode(document.getElementById("qrcode"), {
-      text: walletAddress,
-      width: 180,
-      height: 180,
-      colorDark: "#00ffe0",
-      colorLight: "#0a0a0a",
-      correctLevel: QRCode.CorrectLevel.H
-    });
-
-    const copyBtn = document.getElementById("copyBtn");
-    copyBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(walletAddress).then(() => {
-        copyBtn.textContent = "✅ Copiado!";
-        copyBtn.classList.add("copied");
-        setTimeout(() => {
-          copyBtn.textContent = "📋 Copiar Endereço";
-          copyBtn.classList.remove("copied");
-        }, 2000);
+    function copyWallet() {
+      const wallet = document.getElementById("wallet").textContent;
+      navigator.clipboard.writeText(wallet).then(() => {
+        alert("Address copied!");
       });
-    });
+    }
   </script>
 </body>
 </html>
