@@ -46,6 +46,7 @@
       <a href="#about">_about</a>
       <a href="#projects">_projects</a>
       <a href="#connect">_connect</a>
+      <a href="#payments">_payments</a>
       <a href="https://x.com/JEFE019" target="_blank">🐦 Twitter</a>
     </div>
     <div class="info">
@@ -76,6 +77,20 @@
         <button onclick="copyWallet()">Copy Address</button>
         <br>
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP" alt="Wallet QR Code">
+      </div>
+    </section>
+
+    <!-- 🔥 NOVA SEÇÃO PAYMENTS -->
+    <section id="payments">
+      <h2 class="typing">Payments</h2>
+      <p>You can support my work with Solana (SOL). Scan the QR code or copy the address below:</p>
+
+      <div class="wallet-container">
+        <p><strong>Solana Payment Address:</strong></p>
+        <p id="payment-wallet">FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP</p>
+        <button onclick="copyPaymentWallet()">Copy Address</button>
+        <br>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP" alt="Payment QR Code">
       </div>
     </section>
   </main>
@@ -153,6 +168,13 @@
       const wallet = document.getElementById("wallet").textContent;
       navigator.clipboard.writeText(wallet).then(() => {
         alert("Address copied!");
+      });
+    }
+
+    function copyPaymentWallet() {
+      const wallet = document.getElementById("payment-wallet").textContent;
+      navigator.clipboard.writeText(wallet).then(() => {
+        alert("Payment address copied!");
       });
     }
   </script>
