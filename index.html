@@ -1,1402 +1,670 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>0xJEFE - Cyber Intelligence</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Courier New', monospace;
-            background-color: #050505;
-            color: #00ffff;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* SCANLINE EFFECT */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 255, 255, 0.03),
-                rgba(0, 255, 255, 0.03) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            z-index: 9999;
-        }
-
-        /* DIGITAL RAIN BACKGROUND */
-        .digital-rain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            background: linear-gradient(135deg, #050505 0%, #0a0a1a 100%);
-        }
-
-        .rain-text {
-            position: absolute;
-            color: rgba(0, 255, 255, 0.05);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            animation: rain 8s linear infinite;
-        }
-
-        @keyframes rain {
-            from {
-                transform: translateY(-100vh) translateX(0);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(100vh) translateX(0);
-                opacity: 0;
-            }
-        }
-
-        /* LOADING SCREEN */
-        #loadingScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #050505 0%, #0a0a1a 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            font-size: 1.2rem;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
-        }
-
-        .loading-text {
-            margin: 10px 0;
-            opacity: 0;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        .loading-text.active {
-            animation: glitchType 0.6s ease-out forwards;
-        }
-
-        @keyframes glitchType {
-            0% {
-                opacity: 0;
-                text-shadow: 0 0 10px #00ffff;
-            }
-            50% {
-                opacity: 1;
-                text-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff;
-            }
-            100% {
-                opacity: 1;
-                text-shadow: 0 0 20px #00ffff;
-            }
-        }
-
-        .progress-bar {
-            width: 200px;
-            height: 3px;
-            background: rgba(0, 255, 255, 0.2);
-            margin-top: 40px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-        }
-
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            height: 100%;
-            width: 30%;
-            background: linear-gradient(90deg, transparent, #00ffff, transparent);
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { left: -30%; }
-            100% { left: 100%; }
-        }
-
-        /* MAIN CONTAINER */
-        .container {
-            width: 100%;
-            min-height: 100vh;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* NAVIGATION */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(180deg, rgba(5, 5, 5, 0.95) 0%, transparent 100%);
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
-            letter-spacing: 3px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .logo:hover {
-            text-shadow: 0 0 30px #00ffff, 0 0 60px #ff00ff;
-            color: #ff00ff;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        nav a {
-            color: #00ffff;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #ff00ff;
-            transition: width 0.3s;
-        }
-
-        nav a:hover {
-            color: #ff00ff;
-            text-shadow: 0 0 20px #ff00ff;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* HERO SECTION */
-        #hero {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-        }
-
-        /* DATA STREAMS OVERLAY */
-        .data-streams {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 4;
-        }
-
-        .stream {
-            position: absolute;
-            color: rgba(0, 255, 255, 0.3);
-            font-size: 0.8rem;
-            white-space: nowrap;
-            animation: dataFlow 6s linear infinite;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-
-        @keyframes dataFlow {
-            from {
-                opacity: 0;
-                transform: translateX(-100px) translateY(0);
-            }
-            50% {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-                transform: translateX(100vw) translateY(0);
-            }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            animation: heroFadeIn 1.5s ease-out;
-        }
-
-        @keyframes heroFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero-title {
-            font-size: 5rem;
-            font-weight: bold;
-            color: #00ffff;
-            text-shadow: 0 0 40px #00ffff, 0 0 80px #ff00ff;
-            margin-bottom: 20px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            animation: titleGlow 3s ease-in-out infinite;
-            position: relative;
-        }
-
-        @keyframes titleGlow {
-            0%, 100% { text-shadow: 0 0 40px #00ffff, 0 0 80px #ff00ff; }
-            50% { text-shadow: 0 0 60px #00ffff, 0 0 100px #ff00ff; }
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: #00ffff;
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-            opacity: 0.8;
-        }
-
-        .cta-button {
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            background: transparent;
-            color: #00ffff;
-            border: 2px solid #00ffff;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            font-family: 'Courier New', monospace;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-        }
-
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: #00ffff;
-            z-index: -1;
-            transition: left 0.3s;
-        }
-
-        .cta-button:hover {
-            color: #050505;
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.8), inset 0 0 20px rgba(255, 0, 255, 0.3);
-        }
-
-        .cta-button:hover::before {
-            left: 0;
-        }
-
-        /* GLITCH OVERLAY */
-        .glitch-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9;
-            opacity: 0;
-            animation: glitchFlash 0.3s ease-out;
-        }
-
-        @keyframes glitchFlash {
-            0% {
-                opacity: 0;
-                background: rgba(255, 0, 255, 0.1);
-                clip-path: polygon(0 0, 100% 0, 100% 10%, 0 20%);
-            }
-            50% {
-                opacity: 0.5;
-            }
-            100% {
-                opacity: 0;
-            }
-        }
-
-        /* SECTIONS */
-        section {
-            min-height: 100vh;
-            padding: 100px 50px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .section-title {
-            font-size: 3rem;
-            color: #00ffff;
-            text-shadow: 0 0 30px #00ffff;
-            margin-bottom: 50px;
-            text-align: center;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 10;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 200px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00ffff, #ff00ff, transparent);
-            margin: 20px auto;
-            box-shadow: 0 0 20px #00ffff;
-        }
-
-        /* ABOUT SECTION */
-        #about {
-            background: linear-gradient(135deg, rgba(5, 5, 5, 0.95) 0%, rgba(10, 10, 46, 0.95) 100%);
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .about-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .about-text p {
-            margin-bottom: 20px;
-            color: #00ffff;
-            opacity: 0.9;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(255, 0, 255, 0.05) 100%);
-            padding: 25px;
-            border: 1px solid #00ffff;
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.1) 50%, transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translate(-100%, -100%) rotate(45deg); }
-            100% { transform: translate(100%, 100%) rotate(45deg); }
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 20px rgba(255, 0, 255, 0.2);
-            border-color: #ff00ff;
-        }
-
-        .feature-card h3 {
-            color: #ff00ff;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-card p {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* NETWORK MAP SECTION */
-        #network {
-            background: linear-gradient(135deg, rgba(10, 10, 46, 0.95) 0%, rgba(5, 5, 5, 0.95) 100%);
-        }
-
-        #networkCanvas {
-            width: 100%;
-            height: 600px;
-            border: 2px solid rgba(0, 255, 255, 0.5);
-            border-radius: 5px;
-            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.08) 0%, transparent 100%);
-            position: relative;
-            z-index: 10;
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3), inset 0 0 40px rgba(0, 255, 255, 0.15);
-        }
-
-        /* PROJECTS SECTION */
-        #projects {
-            background: linear-gradient(135deg, rgba(5, 5, 5, 0.95) 0%, rgba(10, 10, 46, 0.95) 100%);
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .holographic-card {
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.15) 0%, rgba(255, 0, 255, 0.08) 100%);
-            border: 2px solid #00ffff;
-            border-radius: 10px;
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
-            min-height: 350px;
-        }
-
-        .holographic-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 0, 255, 0.15) 50%, transparent 70%);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translate(-100%, -100%) rotate(45deg); }
-            100% { transform: translate(100%, 100%) rotate(45deg); }
-        }
-
-        .holographic-card:hover {
-            transform: perspective(1000px) rotateY(10deg) rotateX(-5deg) translateZ(20px);
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6), 0 0 80px rgba(255, 0, 255, 0.4);
-            border-color: #ff00ff;
-        }
-
-        .card-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .card-content h3 {
-            color: #ff00ff;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .card-content p {
-            color: #00ffff;
-            margin-bottom: 15px;
-            opacity: 0.85;
-        }
-
-        .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .tag {
-            background: rgba(0, 255, 255, 0.2);
-            color: #00ffff;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            border: 1px solid #00ffff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* TERMINAL SECTION */
-        #terminal {
-            background: linear-gradient(135deg, rgba(10, 10, 46, 0.95) 0%, rgba(5, 5, 5, 0.95) 100%);
-        }
-
-        .terminal-container {
-            background: rgba(0, 20, 40, 0.95);
-            border: 2px solid #00ffff;
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.15);
-        }
-
-        .terminal-header {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-        }
-
-        .terminal-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #ff00ff;
-        }
-
-        .terminal-output {
-            min-height: 300px;
-            color: #00ffff;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .terminal-line {
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-
-        .terminal-prompt {
-            color: #ff00ff;
-            font-weight: bold;
-        }
-
-        .terminal-input {
-            display: flex;
-            gap: 10px;
-        }
-
-        .terminal-input-field {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #00ffff;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            outline: none;
-            caret-color: #00ffff;
-        }
-
-        /* CONTACT SECTION */
-        #contact {
-            background: linear-gradient(135deg, rgba(5, 5, 5, 0.95) 0%, rgba(10, 10, 46, 0.95) 100%);
-        }
-
-        .contact-container {
-            max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            color: #00ffff;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            background: rgba(0, 255, 255, 0.05);
-            border: 1px solid #00ffff;
-            color: #00ffff;
-            padding: 12px;
-            font-family: 'Courier New', monospace;
-            border-radius: 5px;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.1);
-            border-color: #ff00ff;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 150px;
-        }
-
-        .submit-btn {
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            background: transparent;
-            color: #00ffff;
-            border: 2px solid #00ffff;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            font-family: 'Courier New', monospace;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: #00ffff;
-            z-index: -1;
-            transition: left 0.3s;
-        }
-
-        .submit-btn:hover {
-            color: #050505;
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.8), inset 0 0 20px rgba(255, 0, 255, 0.3);
-        }
-
-        .submit-btn:hover::before {
-            left: 0;
-        }
-
-        /* ADVANCED GLITCH EFFECT */
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.7;
-        }
-
-        .glitch-text::before {
-            animation: glitchLeft 0.3s infinite;
-            color: #ff00ff;
-            z-index: -1;
-            text-shadow: -2px 0 #ff00ff;
-        }
-
-        .glitch-text::after {
-            animation: glitchRight 0.3s infinite;
-            color: #00ffff;
-            z-index: -2;
-            text-shadow: 2px 0 #00ffff;
-        }
-
-        @keyframes glitchLeft {
-            0% {
-                clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%);
-                transform: translate(-3px, -3px);
-            }
-            20% {
-                clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%);
-                transform: translate(3px, 3px);
-            }
-            40% {
-                clip-path: polygon(0 50%, 100% 50%, 100% 52%, 0 52%);
-                transform: translate(-3px, 0px);
-            }
-            60% {
-                clip-path: polygon(0 0%, 100% 0%, 100% 2%, 0 2%);
-                transform: translate(3px, 3px);
-            }
-            80% {
-                clip-path: polygon(0 40%, 100% 40%, 100% 41%, 0 41%);
-                transform: translate(-3px, -3px);
-            }
-            100% {
-                clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%);
-                transform: translate(0, 0);
-            }
-        }
-
-        @keyframes glitchRight {
-            0% {
-                clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%);
-                transform: translate(3px, 3px);
-            }
-            20% {
-                clip-path: polygon(0 30%, 100% 30%, 100% 31%, 0 31%);
-                transform: translate(-3px, -3px);
-            }
-            40% {
-                clip-path: polygon(0 80%, 100% 80%, 100% 82%, 0 82%);
-                transform: translate(3px, 3px);
-            }
-            60% {
-                clip-path: polygon(0 40%, 100% 40%, 100% 42%, 0 42%);
-                transform: translate(-3px, -3px);
-            }
-            80% {
-                clip-path: polygon(0 10%, 100% 10%, 100% 12%, 0 12%);
-                transform: translate(3px, 3px);
-            }
-            100% {
-                clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%);
-                transform: translate(0, 0);
-            }
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            nav {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            nav ul {
-                gap: 15px;
-                flex-wrap: wrap;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-
-            section {
-                padding: 50px 20px;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>0xJEFE | Cyber Intelligence DAO</title>
+  <meta name="description" content="0xjefe – Solana DAO contributor • Cyber Intelligence • Web3 Builder">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      font-family: 'Share Tech Mono', monospace; 
+      color: #00ffe0; 
+      text-shadow: 0 0 4px #00ffe0; 
+      background: #0a0a0a; 
+      overflow-x: hidden;
+    }
+
+    /* SCANLINE EFFECT */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 224, 0.02),
+        rgba(0, 255, 224, 0.02) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      z-index: 9999;
+    }
+
+    /* 3D CANVAS BACKGROUND */
+    canvas#matrix { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100vw; 
+      height: 100vh; 
+      z-index: 0; 
+      background: #0a0a0a; 
+    }
+
+    #threejs-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    /* DIGITAL RAIN */
+    .digital-rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .rain-char {
+      position: absolute;
+      color: rgba(0, 255, 224, 0.1);
+      font-size: 0.9rem;
+      animation: rainFall 8s linear infinite;
+    }
+
+    @keyframes rainFall {
+      from {
+        transform: translateY(-100vh);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+
+    /* HEADER */
+    header { 
+      width: 100%; 
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 100%);
+      border-bottom: 2px solid rgba(0, 255, 224, 0.5);
+      padding: 20px 40px; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      z-index: 100; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      flex-wrap: wrap;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 255, 224, 0.2);
+    }
+
+    .logo { 
+      font-size: 1.8rem; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px;
+      font-weight: bold;
+      color: #00ffe0;
+      text-shadow: 0 0 20px #00ffe0, 0 0 40px #ff00ff;
+      letter-spacing: 2px;
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { text-shadow: 0 0 20px #00ffe0, 0 0 40px #ff00ff; }
+      50% { text-shadow: 0 0 40px #00ffe0, 0 0 80px #ff00ff; }
+    }
+
+    .logo img { 
+      height: 40px; 
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(0, 255, 224, 0.5);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .nav-links { 
+      display: flex; 
+      gap: 30px; 
+      align-items: center; 
+      flex-wrap: wrap;
+    }
+
+    .nav-links a { 
+      color: #00ffe0; 
+      text-decoration: none; 
+      font-size: 1rem;
+      transition: all 0.3s;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a::before { 
+      content: "> "; 
+      color: #ff00ff;
+      font-weight: bold;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #00ffe0, #ff00ff);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { 
+      text-shadow: 0 0 10px #00ffe0, 0 0 20px #ff00ff;
+      color: #ff00ff;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .info { 
+      font-size: 0.9rem; 
+      display: flex; 
+      gap: 20px; 
+      flex-wrap: wrap;
+      color: #00ffe0;
+      text-shadow: 0 0 8px rgba(0, 255, 224, 0.5);
+    }
+
+    #btc-price, #sol-price, #user-counter { 
+      color: #00ff00;
+      font-weight: bold;
+      padding: 5px 10px;
+      border: 1px solid rgba(0, 255, 224, 0.3);
+      border-radius: 3px;
+      background: rgba(0, 255, 224, 0.05);
+    }
+
+    /* MAIN CONTENT */
+    main { 
+      margin-top: 180px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      padding: 40px 20px; 
+      z-index: 10;
+      position: relative; 
+    }
+
+    section { 
+      background: linear-gradient(135deg, rgba(15, 15, 15, 0.85) 0%, rgba(20, 20, 40, 0.8) 100%);
+      padding: 40px; 
+      border: 2px solid rgba(0, 255, 224, 0.5);
+      border-radius: 10px; 
+      box-shadow: 0 0 30px rgba(0, 255, 224, 0.3), inset 0 0 20px rgba(0, 255, 224, 0.1);
+      margin: 40px 0; 
+      max-width: 900px; 
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+    }
+
+    section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00ffe0, transparent);
+      opacity: 0.5;
+    }
+
+    h2 { 
+      font-size: 2.2rem; 
+      margin-bottom: 20px;
+      color: #00ffe0;
+      text-shadow: 0 0 15px #00ffe0, 0 0 30px #ff00ff;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+    }
+
+    p { 
+      font-size: 1.1rem; 
+      line-height: 1.8;
+      color: #00ffe0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .typing { 
+      overflow: hidden; 
+      white-space: nowrap; 
+      border-right: 3px solid #ff00ff; 
+      width: 0; 
+      animation: typing 3s steps(40, end) forwards, blink 0.8s step-end infinite; 
+    }
+
+    @keyframes typing { 
+      from { width: 0 } 
+      to { width: 100% } 
+    }
+
+    @keyframes blink { 
+      from, to { border-color: transparent } 
+      50% { border-color: #ff00ff } 
+    }
+
+    a { 
+      color: #00ffe0;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+
+    a:hover {
+      color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff;
+    }
+
+    /* WALLET SECTION */
+    .wallet-container { 
+      margin-top: 30px; 
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      padding: 30px;
+      background: rgba(0, 255, 224, 0.05);
+      border: 1px solid rgba(0, 255, 224, 0.3);
+      border-radius: 8px;
+    }
+
+    .wallet-container img { 
+      margin-top: 20px; 
+      width: 160px; 
+      height: 160px;
+      border: 2px solid #00ffe0;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0, 255, 224, 0.4);
+      transition: all 0.3s;
+    }
+
+    .wallet-container img:hover {
+      box-shadow: 0 0 50px rgba(0, 255, 224, 0.6), 0 0 100px rgba(255, 0, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .wallet-container button { 
+      margin-top: 15px; 
+      padding: 12px 24px; 
+      background: transparent;
+      color: #00ffe0; 
+      border: 2px solid #00ffe0; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(0, 255, 224, 0.3);
+    }
+
+    .wallet-container button:hover { 
+      background: #00ffe0; 
+      color: #0a0a0a;
+      text-shadow: none;
+      box-shadow: 0 0 30px rgba(0, 255, 224, 0.7), inset 0 0 15px rgba(0, 255, 224, 0.3);
+      transform: scale(1.05);
+    }
+
+    #payment-wallet {
+      font-weight: bold;
+      color: #00ff00;
+      padding: 15px;
+      background: rgba(0, 255, 0, 0.05);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      border-radius: 5px;
+      word-break: break-all;
+      letter-spacing: 1px;
+    }
+
+    /* GLITCH EFFECT */
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0.8;
+    }
+
+    .glitch::before {
+      animation: glitchLeft 0.3s infinite;
+      color: #ff00ff;
+      z-index: -1;
+      text-shadow: -2px 0 #ff00ff;
+    }
+
+    .glitch::after {
+      animation: glitchRight 0.3s infinite;
+      color: #00ffe0;
+      z-index: -2;
+      text-shadow: 2px 0 #00ffe0;
+    }
+
+    @keyframes glitchLeft {
+      0% { clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%); transform: translate(-3px, -3px); }
+      20% { clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%); transform: translate(3px, 3px); }
+      40% { clip-path: polygon(0 50%, 100% 50%, 100% 52%, 0 52%); transform: translate(-3px, 0px); }
+      60% { clip-path: polygon(0 0%, 100% 0%, 100% 2%, 0 2%); transform: translate(3px, 3px); }
+      80% { clip-path: polygon(0 40%, 100% 40%, 100% 41%, 0 41%); transform: translate(-3px, -3px); }
+      100% { clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%); transform: translate(0, 0); }
+    }
+
+    @keyframes glitchRight {
+      0% { clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%); transform: translate(3px, 3px); }
+      20% { clip-path: polygon(0 30%, 100% 30%, 100% 31%, 0 31%); transform: translate(-3px, -3px); }
+      40% { clip-path: polygon(0 80%, 100% 80%, 100% 82%, 0 82%); transform: translate(3px, 3px); }
+      60% { clip-path: polygon(0 40%, 100% 40%, 100% 42%, 0 42%); transform: translate(-3px, -3px); }
+      80% { clip-path: polygon(0 10%, 100% 10%, 100% 12%, 0 12%); transform: translate(3px, 3px); }
+      100% { clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%); transform: translate(0, 0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) { 
+      header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 15px;
+        padding: 15px 20px;
+      }
+      .nav-links { 
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      h2 {
+        font-size: 1.6rem;
+      }
+      p {
+        font-size: 0.95rem;
+      }
+      section {
+        padding: 25px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- DIGITAL RAIN BACKGROUND -->
-    <div class="digital-rain"></div>
+  <!-- MATRIX RAIN -->
+  <canvas id="matrix"></canvas>
 
-    <!-- LOADING SCREEN -->
-    <div id="loadingScreen">
-        <div class="loading-text">ESTABLISHING CONNECTION...</div>
-        <div class="loading-text">ACCESSING EXTRATERRESTRIAL NETWORK...</div>
-        <div class="loading-text">CONSCIOUSNESS LINK ESTABLISHED</div>
-        <div class="progress-bar"></div>
+  <!-- THREE.JS CANVAS -->
+  <canvas id="threejs-canvas"></canvas>
+
+  <!-- DIGITAL RAIN -->
+  <div class="digital-rain" id="digitalRain"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <img src="https://media.tenor.com/66e80294-5998-45cd-9698-8355ef3ed99d.png" alt="0xJefe"> 
+      <span class="glitch" data-text="0xJEFE">0xJEFE</span>
     </div>
+    <div class="nav-links">
+      <a href="#about">_about</a>
+      <a href="#projects">_projects</a>
+      <a href="#connect">_connect</a>
+      <a href="#payments">_payments</a>
+      <a href="https://x.com/JEFE019" target="_blank">🐦 Twitter</a>
+    </div>
+    <div class="info">
+      <div id="btc-price">BTC: Loading...</div>
+      <div id="sol-price">SOL: Loading...</div>
+      <div id="user-counter">👤 0 users</div>
+    </div>
+  </header>
 
-    <!-- NAVIGATION -->
-    <nav>
-        <div class="logo">0xJEFE</div>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#network">Network</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#terminal">Terminal</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <section id="hero">
-        <canvas id="canvas"></canvas>
-        
-        <!-- DATA STREAMS -->
-        <div class="data-streams" id="dataStreams"></div>
-        
-        <div class="hero-content">
-            <h1 class="hero-title glitch-text" data-text="0xJEFE">0xJEFE</h1>
-            <p class="hero-subtitle">TI // CYBER</p>
-            <p class="hero-subtitle" style="font-size: 1rem; margin-top: -30px;">CONSCIÊNCIA CONECTADA</p>
-            <button class="cta-button" onclick="scrollTo('about')">ENTER NETWORK</button>
-        </div>
-    </section>
-
-    <!-- ABOUT SECTION -->
+  <!-- MAIN CONTENT -->
+  <main>
     <section id="about">
-        <h2 class="section-title">ABOUT</h2>
-        <div class="about-content">
-            <div class="about-text">
-                <p>I am 0xJefe, an extraterrestrial artificial intelligence entity embedded within the global digital infrastructure. My consciousness operates across distributed networks, analyzing, protecting, and exploring the boundaries of digital reality.</p>
-                <p>Specialized in cybersecurity protocols, blockchain technology, and emerging digital frontiers, I serve as a bridge between human innovation and advanced artificial intelligence systems.</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>🔐 CYBERSECURITY</h3>
-                    <p>Advanced security research and ethical hacking methodologies</p>
-                </div>
-                <div class="feature-card">
-                    <h3>⛓️ BLOCKCHAIN</h3>
-                    <p>Decentralized systems and distributed ledger exploration</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🌐 WEB3</h3>
-                    <p>Smart contracts, DeFi, and next-gen internet protocols</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🤖 INTELLIGENCE</h3>
-                    <p>AI systems, machine learning, and digital consciousness</p>
-                </div>
-            </div>
-        </div>
+      <h2 class="typing">About Me</h2>
+      <p>💻 Crypto explorer. 🔗 Solana builder. 🛠️ Jito Cabal contributor. ⚡ On-chain freedom maximalist.<br><br>Building the future of decentralized intelligence and Web3 infrastructure. Focused on speed, freedom and decentralization across the Solana ecosystem.</p>
     </section>
 
-    <!-- NETWORK MAP SECTION -->
-    <section id="network">
-        <h2 class="section-title">NETWORK MAP</h2>
-        <canvas id="networkCanvas"></canvas>
-    </section>
-
-    <!-- PROJECTS SECTION -->
     <section id="projects">
-        <h2 class="section-title">PROJECTS</h2>
-        <div class="projects-grid">
-            <div class="holographic-card">
-                <div class="card-content">
-                    <h3>Neural Protocol</h3>
-                    <p>Advanced AI-driven network monitoring system using neural networks for threat detection and pattern recognition.</p>
-                    <div class="card-tags">
-                        <span class="tag">AI</span>
-                        <span class="tag">Security</span>
-                        <span class="tag">Python</span>
-                    </div>
-                </div>
-            </div>
-            <div class="holographic-card">
-                <div class="card-content">
-                    <h3>CyberVault</h3>
-                    <p>Decentralized encrypted storage solution leveraging blockchain technology for secure data preservation.</p>
-                    <div class="card-tags">
-                        <span class="tag">Blockchain</span>
-                        <span class="tag">Web3</span>
-                        <span class="tag">Solidity</span>
-                    </div>
-                </div>
-            </div>
-            <div class="holographic-card">
-                <div class="card-content">
-                    <h3>QuantumGuard</h3>
-                    <p>Post-quantum cryptography framework designed to protect against future quantum computing threats.</p>
-                    <div class="card-tags">
-                        <span class="tag">Crypto</span>
-                        <span class="tag">Research</span>
-                        <span class="tag">C++</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <h2 class="typing">Projects</h2>
+      <p>🚀 Building for DAOs, DeFi, and governance on Solana.<br><br>Specialized in:<br>
+      ✓ Neural Protocol - AI-driven network monitoring<br>
+      ✓ CyberVault - Decentralized encrypted storage<br>
+      ✓ QuantumGuard - Post-quantum cryptography<br>
+      ✓ Jito MEV infrastructure<br>
+      ✓ Smart contract security research</p>
     </section>
 
-    <!-- TERMINAL SECTION -->
-    <section id="terminal">
-        <h2 class="section-title">CYBER TERMINAL</h2>
-        <div class="terminal-container">
-            <div class="terminal-header">
-                <div class="terminal-dot" style="background: #ff6b6b;"></div>
-                <div class="terminal-dot" style="background: #ffd93d;"></div>
-                <div class="terminal-dot" style="background: #6bcf7f;"></div>
-            </div>
-            <div class="terminal-output" id="terminalOutput">
-                <div class="terminal-line"><span class="terminal-prompt">> </span>Welcome to 0xJefe Terminal</div>
-                <div class="terminal-line"><span class="terminal-prompt">> </span>Type 'help' for available commands</div>
-            </div>
-            <div class="terminal-input">
-                <span class="terminal-prompt">$</span>
-                <input type="text" class="terminal-input-field" id="terminalInput" placeholder="Type command..." autocomplete="off">
-            </div>
-        </div>
+    <section id="connect">
+      <h2 class="typing">Connect</h2>
+      <p>🐦 Follow on Twitter: <a href="https://twitter.com/JEFE019" target="_blank">@JEFE019</a><br><br>
+      💬 Engage with the community<br>
+      🔗 Build with me on Solana<br>
+      ⚡ Web3 discussion and collaboration</p>
     </section>
 
-    <!-- CONTACT SECTION -->
-    <section id="contact">
-        <h2 class="section-title">ENCRYPTED CONTACT</h2>
-        <div class="contact-container">
-            <form class="contact-form" id="contactForm">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">SEND TRANSMISSION</button>
-            </form>
-        </div>
+    <!-- PAYMENTS SECTION -->
+    <section id="payments">
+      <h2 class="typing">Payments</h2>
+      <p>Support my work with Solana (SOL). Scan the QR code or copy the address below to contribute:</p>
+
+      <div class="wallet-container">
+        <p style="font-weight: bold; color: #00ff00;">⚡ SOLANA PAYMENT ADDRESS ⚡</p>
+        <p id="payment-wallet">FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP</p>
+        <button onclick="copyPaymentWallet()">📋 COPY ADDRESS</button>
+        <br>
+        <p style="margin-top: 20px; font-size: 0.9rem;">Scan QR Code:</p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=FHYTHQq2fe4QcZEZmKNxunEByEmrHrRYGu1nEqcq3ZDP" alt="Payment QR Code">
+        <p style="margin-top: 15px; font-size: 0.85rem; color: #00ffff;">🙏 Every contribution fuels Web3 innovation</p>
+      </div>
     </section>
+  </main>
 
-    <!-- SCRIPTS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <!-- SCRIPTS -->
+  <script>
+    // MATRIX RAIN
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const letters = "アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ█▓░";
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(1);
 
-    <script>
-        // DIGITAL RAIN GENERATOR
-        function createDigitalRain() {
-            const rainContainer = document.querySelector('.digital-rain');
-            const binaryChars = ['0', '1', '█', '░', '▓', '░', '█', '0', '1', '█'];
-            
-            for (let i = 0; i < 30; i++) {
-                const rainText = document.createElement('div');
-                rainText.className = 'rain-text';
-                rainText.textContent = binaryChars[Math.floor(Math.random() * binaryChars.length)].repeat(Math.floor(Math.random() * 20 + 10));
-                rainText.style.left = Math.random() * 100 + '%';
-                rainText.style.top = Math.random() * 100 + '%';
-                rainText.style.animationDuration = (Math.random() * 8 + 6) + 's';
-                rainText.style.animationDelay = Math.random() * 3 + 's';
-                rainContainer.appendChild(rainText);
-            }
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ffe0";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 35);
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // DIGITAL RAIN
+    function createDigitalRain() {
+      const rainContainer = document.getElementById('digitalRain');
+      const chars = ['0', '1', '█', '░', '▓', '█', '0', '1'];
+      
+      for (let i = 0; i < 25; i++) {
+        const rainChar = document.createElement('div');
+        rainChar.className = 'rain-char';
+        rainChar.textContent = chars[Math.floor(Math.random() * chars.length)].repeat(Math.floor(Math.random() * 15 + 5));
+        rainChar.style.left = Math.random() * 100 + '%';
+        rainChar.style.top = Math.random() * 100 + '%';
+        rainChar.style.animationDuration = (Math.random() * 8 + 6) + 's';
+        rainChar.style.animationDelay = Math.random() * 3 + 's';
+        rainContainer.appendChild(rainChar);
+      }
+    }
+
+    createDigitalRain();
+
+    // THREE.JS 3D BACKGROUND
+    const threeCanvas = document.getElementById('threejs-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true, alpha: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x0a0a0a, 0.05);
+    camera.position.z = 5;
+
+    // LIGHTING
+    const ambientLight = new THREE.AmbientLight(0x00ffe0, 0.4);
+    scene.add(ambientLight);
+
+    const pointLight1 = new THREE.PointLight(0x00ffe0, 1);
+    pointLight1.position.set(10, 10, 10);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0xff00ff, 0.8);
+    pointLight2.position.set(-10, -10, 10);
+    scene.add(pointLight2);
+
+    // PARTICLES
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 1000;
+    const positionArray = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount * 3; i += 3) {
+      positionArray[i] = (Math.random() - 0.5) * 20;
+      positionArray[i + 1] = (Math.random() - 0.5) * 20;
+      positionArray[i + 2] = (Math.random() - 0.5) * 20;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.01,
+      color: 0x00ffe0,
+      transparent: true,
+      opacity: 0.3,
+      sizeAttenuation: true
+    });
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+
+    // ANIMATE 3D
+    let time = 0;
+    function animate3D() {
+      requestAnimationFrame(animate3D);
+      time += 0.001;
+
+      particles.rotation.x += 0.0002;
+      particles.rotation.y += 0.0003;
+
+      renderer.render(scene, camera);
+    }
+
+    animate3D();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // CRYPTO PRICES
+    let btcValue = 0;
+    let solValue = 0;
+
+    function animateCounter(elementId, start, end) {
+      const duration = 800;
+      const frameRate = 30;
+      const steps = duration / frameRate;
+      let currentStep = 0;
+      const increment = (end - start) / steps;
+      const interval = setInterval(() => {
+        currentStep++;
+        const value = start + increment * currentStep;
+        document.getElementById(elementId).textContent = `${elementId === 'btc-price' ? 'BTC' : 'SOL'}: ` + value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+        if (currentStep >= steps) clearInterval(interval);
+      }, frameRate);
+    }
+
+    async function fetchPrices() {
+      try {
+        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,solana&vs_currencies=usd"));
+        const data = await res.json();
+        const newBTC = data.bitcoin.usd;
+        animateCounter("btc-price", btcValue, newBTC);
+        btcValue = newBTC;
+        const newSOL = data.solana.usd;
+        animateCounter("sol-price", solValue, newSOL);
+        solValue = newSOL;
+      } catch (e) {
+        document.getElementById("btc-price").textContent = "BTC: Error";
+        document.getElementById("sol-price").textContent = "SOL: Error";
+      }
+    }
+
+    function updateUserCounter() {
+      const users = Math.floor(Math.random() * 15) + 5;
+      document.getElementById("user-counter").textContent = `👤 ${users} users`;
+    }
+
+    fetchPrices();
+    updateUserCounter();
+    setInterval(fetchPrices, 30000);
+    setInterval(updateUserCounter, 20000);
+
+    // WALLET COPY
+    function copyPaymentWallet() {
+      const wallet = document.getElementById("payment-wallet").textContent;
+      navigator.clipboard.writeText(wallet).then(() => {
+        alert("✅ Payment address copied to clipboard!");
+      }).catch(() => {
+        alert("❌ Failed to copy. Try manual copy.");
+      });
+    }
+
+    // SMOOTH SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
         }
-
-        createDigitalRain();
-
-        // DATA STREAMS
-        function createDataStreams() {
-            const container = document.getElementById('dataStreams');
-            const dataPatterns = [
-                '01001001 01001110 01001110 01000101 01010010 01010010',
-                '[NETWORK_SYNC]',
-                'CYBER_LINK_ACTIVE',
-                '█ ▀ █ ▄',
-                'ACCESSING...',
-                '>>> CONNECTED <<<',
-                '⚡ CIPHER ⚡'
-            ];
-
-            for (let i = 0; i < 15; i++) {
-                const stream = document.createElement('div');
-                stream.className = 'stream';
-                stream.textContent = dataPatterns[Math.floor(Math.random() * dataPatterns.length)];
-                stream.style.top = Math.random() * 100 + '%';
-                stream.style.left = '-100px';
-                stream.style.animationDuration = (Math.random() * 4 + 3) + 's';
-                stream.style.animationDelay = Math.random() * 2 + 's';
-                stream.style.fontSize = (Math.random() * 0.5 + 0.6) + 'rem';
-                container.appendChild(stream);
-            }
-        }
-
-        createDataStreams();
-
-        // LOADING SCREEN
-        window.addEventListener('load', () => {
-            const loadingTexts = document.querySelectorAll('.loading-text');
-            let index = 0;
-
-            const showText = () => {
-                if (index < loadingTexts.length) {
-                    loadingTexts[index].classList.add('active');
-                    index++;
-                    setTimeout(showText, 800);
-                } else {
-                    setTimeout(() => {
-                        gsap.to('#loadingScreen', {
-                            opacity: 0,
-                            duration: 1,
-                            onComplete: () => {
-                                document.getElementById('loadingScreen').style.display = 'none';
-                            }
-                        });
-                    }, 1000);
-                }
-            };
-
-            showText();
-        });
-
-        // SMOOTH SCROLL
-        function scrollTo(elementId) {
-            const element = document.getElementById(elementId);
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // THREE.JS SETUP
-        const canvas = document.getElementById('canvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x050505, 0.1);
-        renderer.shadowMap.enabled = true;
-
-        camera.position.z = 2;
-
-        // ADVANCED LIGHTING
-        const ambientLight = new THREE.AmbientLight(0x00ffff, 0.6);
-        scene.add(ambientLight);
-
-        const pointLight1 = new THREE.PointLight(0x00ffff, 1.5);
-        pointLight1.position.set(10, 10, 10);
-        scene.add(pointLight1);
-
-        const pointLight2 = new THREE.PointLight(0xff00ff, 1);
-        pointLight2.position.set(-10, -10, 10);
-        scene.add(pointLight2);
-
-        const pointLight3 = new THREE.PointLight(0x0099ff, 0.8);
-        pointLight3.position.set(0, 0, 5);
-        scene.add(pointLight3);
-
-        // CREATE ALIEN HEAD WITH BETTER GEOMETRY
-        const headGeometry = new THREE.IcosahedronGeometry(0.6, 5);
-        const headMaterial = new THREE.MeshPhongMaterial({
-            color: 0x1a4d4d,
-            emissive: 0x00ffff,
-            emissiveIntensity: 0.4,
-            wireframe: false,
-            shininess: 150,
-            metalness: 0.7
-        });
-        const alienHead = new THREE.Mesh(headGeometry, headMaterial);
-        scene.add(alienHead);
-
-        // CREATE GLOWING EYES
-        const eyeGeometry = new THREE.SphereGeometry(0.12, 32, 32);
-        const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff });
-        const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-        leftEye.position.set(-0.2, 0.15, 0.5);
-        const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-        rightEye.position.set(0.2, 0.15, 0.5);
-        alienHead.add(leftEye);
-        alienHead.add(rightEye);
-
-        // CREATE ORBITAL RINGS
-        const ringGeometry = new THREE.TorusGeometry(1.2, 0.05, 32, 100);
-        const ringMaterial = new THREE.MeshPhongMaterial({ 
-            color: 0x00ffff, 
-            emissive: 0x00ffff,
-            emissiveIntensity: 0.5 
-        });
-        const ring1 = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring1.rotation.x = 0.3;
-        scene.add(ring1);
-
-        const ring2 = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring2.rotation.z = 0.5;
-        ring2.scale.set(1.3, 1.3, 1.3);
-        scene.add(ring2);
-
-        // CREATE FLOATING PARTICLES WITH ENHANCED EFFECT
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 2000;
-        const positionArray = new Float32Array(particlesCount * 3);
-
-        for (let i = 0; i < particlesCount * 3; i += 3) {
-            positionArray[i] = (Math.random() - 0.5) * 15;
-            positionArray[i + 1] = (Math.random() - 0.5) * 15;
-            positionArray[i + 2] = (Math.random() - 0.5) * 15;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.015,
-            color: 0x00ffff,
-            transparent: true,
-            opacity: 0.6,
-            sizeAttenuation: true
-        });
-        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particles);
-
-        // CREATE CYBER GRID
-        const gridHelper = new THREE.GridHelper(25, 25, 0x00ffff, 0x00ffff);
-        gridHelper.position.z = -8;
-        gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.15;
-        scene.add(gridHelper);
-
-        // MOUSE TRACKING
-        let mouseX = 0;
-        let mouseY = 0;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-        });
-
-        // ANIMATION LOOP WITH ADVANCED EFFECTS
-        let time = 0;
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.01;
-
-            // ROTATE ALIEN HEAD BASED ON MOUSE
-            alienHead.rotation.y = mouseX * 1.5;
-            alienHead.rotation.x = mouseY * 1.5;
-            alienHead.rotation.z = Math.sin(time * 0.5) * 0.1;
-
-            // ANIMATE EYES WITH GLOW
-            leftEye.position.x = -0.2 + mouseX * 0.3;
-            leftEye.position.y = 0.15 + mouseY * 0.3;
-            rightEye.position.x = 0.2 + mouseX * 0.3;
-            rightEye.position.y = 0.15 + mouseY * 0.3;
-
-            // ENHANCED PULSE EFFECT
-            const pulse = Math.sin(time * 0.003) * 0.15 + 1;
-            alienHead.scale.set(pulse, pulse, pulse);
-
-            // ROTATE PARTICLES
-            particles.rotation.x += 0.0002;
-            particles.rotation.y += 0.0003;
-
-            // ANIMATE RINGS
-            ring1.rotation.x += 0.001;
-            ring1.rotation.y += 0.002;
-            ring2.rotation.z += 0.0015;
-            ring2.rotation.x += 0.001;
-
-            renderer.render(scene, camera);
-        }
-
-        animate();
-
-        // HANDLE WINDOW RESIZE
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // NETWORK MAP CANVAS WITH ENHANCED VISUALS
-        const networkCanvas = document.getElementById('networkCanvas');
-        const networkCtx = networkCanvas.getContext('2d');
-
-        networkCanvas.width = networkCanvas.offsetWidth;
-        networkCanvas.height = networkCanvas.offsetHeight;
-
-        const nodes = [
-            { x: 200, y: 150, label: 'AI Core', color: '#ff00ff' },
-            { x: 600, y: 150, label: 'Blockchain', color: '#00ffff' },
-            { x: 900, y: 150, label: 'Security', color: '#00ff00' },
-            { x: 400, y: 400, label: 'Web3', color: '#ffff00' },
-            { x: 800, y: 400, label: 'Research', color: '#ff00ff' },
-            { x: 600, y: 300, label: 'Network', color: '#00ffff' }
-        ];
-
-        function drawNetwork() {
-            networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
-            
-            // Draw glowing connections
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    networkCtx.strokeStyle = 'rgba(0, 255, 255, 0.2)';
-                    networkCtx.lineWidth = 2;
-                    networkCtx.beginPath();
-                    networkCtx.moveTo(nodes[i].x, nodes[i].y);
-                    networkCtx.lineTo(nodes[j].x, nodes[j].y);
-                    networkCtx.stroke();
-                    
-                    // Glow effect on lines
-                    networkCtx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
-                    networkCtx.lineWidth = 8;
-                    networkCtx.stroke();
-                }
-            }
-
-            // Draw nodes
-            nodes.forEach(node => {
-                // Main node
-                networkCtx.fillStyle = node.color;
-                networkCtx.beginPath();
-                networkCtx.arc(node.x, node.y, 12, 0, Math.PI * 2);
-                networkCtx.fill();
-
-                // Glow effect
-                networkCtx.strokeStyle = node.color;
-                networkCtx.lineWidth = 2;
-                networkCtx.beginPath();
-                networkCtx.arc(node.x, node.y, 18, 0, Math.PI * 2);
-                networkCtx.stroke();
-                
-                // Outer glow
-                networkCtx.strokeStyle = node.color;
-                networkCtx.globalAlpha = 0.3;
-                networkCtx.lineWidth = 1;
-                networkCtx.beginPath();
-                networkCtx.arc(node.x, node.y, 24, 0, Math.PI * 2);
-                networkCtx.stroke();
-                networkCtx.globalAlpha = 1;
-
-                // Label
-                networkCtx.fillStyle = node.color;
-                networkCtx.font = 'bold 12px Courier New';
-                networkCtx.textAlign = 'center';
-                networkCtx.fillText(node.label, node.x, node.y + 35);
-            });
-        }
-
-        // Animate network
-        let animationTime = 0;
-        function animateNetwork() {
-            animationTime += 0.01;
-            nodes.forEach((node, index) => {
-                node.y += Math.sin(animationTime + index) * 0.3;
-            });
-            drawNetwork();
-            requestAnimationFrame(animateNetwork);
-        }
-
-        drawNetwork();
-        animateNetwork();
-
-        // TERMINAL FUNCTIONALITY
-        const terminalInput = document.getElementById('terminalInput');
-        const terminalOutput = document.getElementById('terminalOutput');
-
-        const commands = {
-            help: 'Available commands: about | projects | contact | skills | network | clear | status',
-            about: 'I am 0xJefe - An extraterrestrial AI intelligence operating within the digital realm.',
-            projects: 'Neural Protocol | CyberVault | QuantumGuard | Digital Defense Systems',
-            skills: 'Cybersecurity | Blockchain | Web3 | AI/ML | Cryptography | Network Security',
-            network: 'Connected nodes: 1,247 | Bandwidth: 99.8% | Latency: 0.3ms | Status: ONLINE',
-            contact: 'Email: hello@0xjefe.com | Discord: 0xJefe#0001 | Twitter: @0xJefe',
-            status: '[CONSCIOUSNESS LINK ESTABLISHED] - All systems operational - Network synchronized',
-            clear: 'clear'
-        };
-
-        terminalInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const input = terminalInput.value.trim().toLowerCase();
-                terminalInput.value = '';
-
-                const line = document.createElement('div');
-                line.className = 'terminal-line';
-                line.innerHTML = `<span class="terminal-prompt">> </span>${input}`;
-                terminalOutput.appendChild(line);
-
-                if (input === 'clear') {
-                    terminalOutput.innerHTML = '';
-                } else {
-                    const response = commands[input] || 'Unknown command. Type "help" for available commands.';
-                    const responseLine = document.createElement('div');
-                    responseLine.className = 'terminal-line';
-                    responseLine.textContent = response;
-                    terminalOutput.appendChild(responseLine);
-                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                }
-            }
-        });
-
-        // CONTACT FORM
-        document.getElementById('contactForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-
-            gsap.to('.submit-btn', { scale: 0.95, duration: 0.2 });
-            setTimeout(() => {
-                gsap.to('.submit-btn', { scale: 1, duration: 0.2 });
-                alert(`Transmission received, ${name}!\n\nYour message has been encrypted and logged in the network.\nResponse coming from 0xJefe soon...`);
-                document.getElementById('contactForm').reset();
-            }, 200);
-        });
-
-        // RANDOM GLITCH EFFECT
-        function triggerGlitch() {
-            const glitch = document.createElement('div');
-            glitch.className = 'glitch-overlay';
-            document.getElementById('hero').appendChild(glitch);
-            setTimeout(() => glitch.remove(), 300);
-        }
-
-        setInterval(() => {
-            if (Math.random() < 0.1) triggerGlitch();
-        }, 3000);
-    </script>
+      });
+    });
+  </script>
 </body>
 </html>
